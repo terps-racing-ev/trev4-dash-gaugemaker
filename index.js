@@ -5,6 +5,8 @@ var generateBtn = document.getElementById("generate");
 var exportBtn = document.getElementById("export");
 var addGaugeBtn = document.getElementById("add_gauge");
 
+var importInput = document.getElementById("import_json");
+
 var canvasHeight = document.getElementById("height");
 var canvasWidth = document.getElementById("width");
 
@@ -13,6 +15,10 @@ var createGaugeMenu = document.getElementById("define_gauge");
 
 var linearGaugeOptions = document.getElementById("signed_linear_options");
 
+var nonLabelOptions = document.getElementById("non_label_options");
+
+var canvasSize = document.getElementById("canvas_size");
+
 var activeGauges = [];
 
 var ctx = canvas.getContext("2d");
@@ -20,7 +26,7 @@ var ctx = canvas.getContext("2d");
 exportBtn.style.display = "none";
 canvas.style.display = "none";
 createGaugeMenu.style.display = "none";
-
+canvasSize.style.display = "none";
 
 var exportData = {
     display: {
@@ -37,10 +43,17 @@ gaugeType.addEventListener("change", function () {
         document.getElementById("gauge_decimals").style.display = "inline";
         document.getElementById("decimals").style.display = "inline";
         linearGaugeOptions.style.display = "none";
-    } else {
+        nonLabelOptions.style.display = "inline";
+    } else if(gaugeType.value == "signed_linear") {
         document.getElementById("gauge_decimals").style.display = "none";
         document.getElementById("decimals").style.display = "none";
         linearGaugeOptions.style.display = "inline";
+        nonLabelOptions.style.display = "inline";
+    } else if(gaugeType.value == "label") {
+        document.getElementById("gauge_decimals").style.display = "none";
+        document.getElementById("decimals").style.display = "none";
+        nonLabelOptions.style.display = "none";
+        linearGaugeOptions.style.display = "none";
     }
 });
 
@@ -52,6 +65,8 @@ generateBtn.addEventListener("click", function () {
     canvas.style.height = canvasHeight.value + "px";
     canvas.style.backgroundColor = `rgb(${exportData.display.bg_color.join(",")})`;
 
+    document.getElementById("start").style.display = "none";
+
     canvas.width = Number(canvasWidth.value);
     canvas.height = Number(canvasHeight.value);
 
@@ -60,8 +75,32 @@ generateBtn.addEventListener("click", function () {
     exportData.display.width = Number(canvasWidth.value);
     exportData.display.height = Number(canvasHeight.value);
 
+    canvasSize.textContent = canvasWidth.value + "x" + canvasHeight.value;
+    canvasSize.style.display = "inline";
+
     gaugeType.dispatchEvent(new Event("change"));
+    
 });
+
+importInput.addEventListener("change", function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            loadFromJSON(data);
+        } catch (error) {
+            alert("Invalid JSON file");
+            console.error(error);
+        }
+    };
+
+    reader.readAsText(file);
+});
+
 
 addGaugeBtn.addEventListener("click", function () {
     var type = idToGaugeType(gaugeType.value);
@@ -156,6 +195,7 @@ function getMousePos(canvas, event) {
 
 
 function refreshGauges() {
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = `rgb(${exportData.display.bg_color.join(",")})`;
@@ -163,6 +203,7 @@ function refreshGauges() {
 
     for (let gauge of activeGauges) {
         gauge.draw(ctx);
+        console.log("crate gauge of at " + gauge.x + ", " + gauge.y + " with size " + gauge.width + "x" + gauge.height);
     }
 }
 
@@ -189,6 +230,38 @@ function downloadJSON(data, filename = "data.json") {
 
     URL.revokeObjectURL(url);
 }
+
+function loadFromJSON(data) {
+    activeGauges = [];
+    exportData = data;
+
+    document.getElementById("start").style.display = "none";
+
+    exportBtn.style.display = "inline";
+    canvas.style.display = "inline";
+    createGaugeMenu.style.display = "inline";
+
+    canvas.width = Number(data.display.width);
+    canvas.height = Number(data.display.height);
+
+    canvas.style.width = canvas.width + "px";
+    canvas.style.height = canvas.height + "px";
+
+    canvasWidth.value = canvas.width;
+    canvasHeight.value = canvas.height;
+
+    canvasSize.textContent = canvasWidth.value + "x" + canvasHeight.value;
+    canvasSize.style.display = "inline";
+
+    for (let gaugeData of data.gauges) {
+        activeGauges.push(new Gauge(gaugeData));
+    }
+
+    gaugeType.dispatchEvent(new Event("change"));
+
+    refreshGauges();
+}
+
 
 exportBtn.addEventListener("click", function () {
     downloadJSON(exportData, "gauge_config.json");

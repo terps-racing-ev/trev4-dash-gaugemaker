@@ -1,4 +1,4 @@
-export default class Gauge{
+export default class Gauge {
     constructor(data) {
         this.data = data;
 
@@ -14,7 +14,7 @@ export default class Gauge{
             this.height = 0;
         }
 
-    }  
+    }
 
     contains(px, py) {
         return (
@@ -26,16 +26,40 @@ export default class Gauge{
     }
 
     draw(ctx) {
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
 
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.font = "14px Arial";
-        ctx.fillStyle = "black";    
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "14px Arial";
+    ctx.fillStyle = "black";
 
-        const centerX = this.x + this.width / 2;
-        const centerY = this.y + this.height / 2;
+    const centerX = this.x + this.width / 2;
+    const centerY = this.y + this.height / 2;
 
-        ctx.fillText(this.data.label, centerX, centerY);
+    const text = this.data.label + " | " + this.type(this.data.type);
+
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+
+    if(this.height >= this.width* 2 && ctx.measureText(text).width > this.width)
+         ctx.rotate(-Math.PI / 2);
+
+    ctx.fillText(text, 0, 0);
+    ctx.restore();
+}
+
+
+    type(type) {
+        switch (type) {
+            case "Simple Gauge":
+                return "S";
+            case "Signed Linear Gauge":
+                return "L";
+            case "Label":
+                return "";
+            default:
+                return null;
+        }
     }
 }
