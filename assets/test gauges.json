@@ -1,0 +1,190 @@
+{
+  "display": {
+    "width": 800,
+    "height": 480,
+    "bg_color": [
+      0,
+      0,
+      0
+    ]
+  },
+  "gauges": [
+    {
+      "type": "Simple Gauge",
+      "label": "fart",
+      "signal": "fart",
+      "min_val": "",
+      "max_val": "",
+      "box_xywh": [
+        "10",
+        "10",
+        "50",
+        "50"
+      ],
+      "box_color": [
+        0,
+        0,
+        0
+      ],
+      "border_color": [
+        255,
+        255,
+        255
+      ],
+      "text_color": [
+        255,
+        255,
+        255
+      ],
+      "decimals": 0
+    },
+    {
+      "type": "Simple Gauge",
+      "label": "fart2",
+      "signal": "fart1",
+      "min_val": "",
+      "max_val": "",
+      "box_xywh": [
+        "200",
+        "200",
+        "300",
+        "50"
+      ],
+      "box_color": [
+        0,
+        0,
+        0
+      ],
+      "border_color": [
+        255,
+        255,
+        255
+      ],
+      "text_color": [
+        255,
+        255,
+        255
+      ],
+      "decimals": 0
+    },
+    {
+      "type": "Simple Gauge",
+      "label": "tall!",
+      "signal": "tall",
+      "min_val": "",
+      "max_val": "",
+      "box_xywh": [
+        "600",
+        "240",
+        "50",
+        "200"
+      ],
+      "box_color": [
+        0,
+        0,
+        0
+      ],
+      "border_color": [
+        255,
+        255,
+        255
+      ],
+      "text_color": [
+        255,
+        255,
+        255
+      ],
+      "decimals": 0
+    },
+    {
+      "type": "Label",
+      "label": "TREV4",
+      "box_xywh": [
+        "200",
+        "50",
+        "100",
+        "40"
+      ],
+      "box_color": [
+        0,
+        0,
+        0
+      ],
+      "border_color": [
+        255,
+        255,
+        255
+      ],
+      "text_color": [
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "type": "Signed Linear Gauge",
+      "label": "Linear Guage",
+      "box_xywh": [
+        "600",
+        "20",
+        "20",
+        "200"
+      ],
+      "box_color": [
+        0,
+        0,
+        0
+      ],
+      "border_color": [
+        255,
+        255,
+        255
+      ],
+      "text_color": [
+        255,
+        255,
+        255
+      ],
+      "signal": "",
+      "min_val": "",
+      "max_val": "",
+      "positive_color": [
+        0,
+        255,
+        0
+      ],
+      "negative_color": [
+        255,
+        0,
+        0
+      ],
+      "vertical": false,
+      "show_value": false
+    },
+    {
+      "type": "Label",
+      "label": "colorful",
+      "box_xywh": [
+        "40",
+        "420",
+        "50",
+        "50"
+      ],
+      "box_color": [
+        255,
+        0,
+        0
+      ],
+      "border_color": [
+        0,
+        251,
+        255
+      ],
+      "text_color": [
+        89,
+        255,
+        0
+      ]
+    }
+  ]
+}

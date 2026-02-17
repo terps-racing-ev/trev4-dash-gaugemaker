@@ -32,7 +32,7 @@ var exportData = {
     display: {
         width: Number(canvasWidth.value),
         height: Number(canvasHeight.value),
-        bg_color: [255, 255, 255]
+        bg_color: [0, 0, 0]
     },
     gauges: []
 };
@@ -136,14 +136,17 @@ addGaugeBtn.addEventListener("click", function () {
     var toAdd = {
         type: type,
         label: label,
-        signal: signal,
-        min_val: min,
-        max_val: max,
+
         box_xywh: transform,
         box_color: boxColor,
         border_color: borderColor,
         text_color: textColor
     };
+    if(type !== "Label") {
+        toAdd.signal = signal;
+        toAdd.min_val = min;
+        toAdd.max_val = max;
+    }
 
     if (type === "Simple Gauge") {
         toAdd.decimals = Number(decimals);
@@ -166,7 +169,10 @@ canvas.addEventListener("click", function (e) {
 
     for (let gauge of activeGauges) {
         if (gauge.contains(mousePos.x, mousePos.y)) {
-            const result = confirm(`Delete "${gauge.data.label}"?`);
+
+            var gaugeInfo = `Label: ${gauge.data.label}\nType: ${gauge.data.type}\nSignal: ${gauge.data.signal || "N/A"} \nPosition: (${gauge.x}, ${gauge.y})\nSize: ${gauge.width}x${gauge.height}`;
+
+            const result = confirm(`${gaugeInfo}\n\nDo you want to delete "${gauge.data.label}"?`);
 
             if (result) {
                 console.log("deleting gauge");
@@ -198,7 +204,7 @@ function refreshGauges() {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = `rgb(${exportData.display.bg_color.join(",")})`;
+    ctx.fillStyle = `rgb(${exportData.display.bg_color[0]}, ${exportData.display.bg_color[1]}, ${exportData.display.bg_color[2]})`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (let gauge of activeGauges) {
@@ -209,9 +215,16 @@ function refreshGauges() {
 
 // Modify this as you add more gauge types
 function idToGaugeType(id) {
-    if (id === "simple") return "Simple Gauge";
-    else if (id === "signed_linear") return "Signed Linear Gauge";
-    else return null;
+    switch (id) {
+        case "simple":
+            return "Simple Gauge";
+        case "signed_linear":
+            return "Signed Linear Gauge";
+        case "label":
+            return "Label";
+        default:
+            return null;
+    }
 }
 
 function downloadJSON(data, filename = "data.json") {

@@ -26,17 +26,21 @@ export default class Gauge {
     }
 
     draw(ctx) {
+    ctx.fillStyle = `rgba(${this.data.box_color[0]}, ${this.data.box_color[1]}, ${this.data.box_color[2]}, 1)`;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    ctx.strokeStyle = `rgba(${this.data.border_color[0]}, ${this.data.border_color[1]}, ${this.data.border_color[2]}, 1)`;
     ctx.strokeRect(this.x, this.y, this.width, this.height);
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "14px Arial";
-    ctx.fillStyle = "black";
+    ctx.fillStyle = `rgba(${this.data.text_color[0]}, ${this.data.text_color[1]}, ${this.data.text_color[2]}, 1)`;
 
     const centerX = this.x + this.width / 2;
     const centerY = this.y + this.height / 2;
 
-    const text = this.data.label + " | " + this.type(this.data.type);
+    const text = this.data.label + this.type(this.data.type);
 
 
     ctx.save();
@@ -53,9 +57,9 @@ export default class Gauge {
     type(type) {
         switch (type) {
             case "Simple Gauge":
-                return "S";
+                return " | S";
             case "Signed Linear Gauge":
-                return "L";
+                return " | L";
             case "Label":
                 return "";
             default:
