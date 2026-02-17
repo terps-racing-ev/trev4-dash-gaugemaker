@@ -1,7 +1,7 @@
 # trev4-dash-gaugemaker
 Web tool to generate guage data JSON files
 
-
+<h2>Common to All Elements</h2>
 <h3>Label / Common Variables </h3>
 
 - Label (string)
@@ -20,6 +20,7 @@ Web tool to generate guage data JSON files
 - Maximum Value (number)
 - Decimal Places (number)
 
+<h2>Specific to Gauge Types</h2>
 <h3>Signed Linear Gauge</h3>
 
 - Positive Color (rgb color)
