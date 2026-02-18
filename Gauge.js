@@ -59,9 +59,11 @@ export default class Gauge {
             case "Simple Gauge":
                 return " | S";
             case "Signed Linear Gauge":
-                return " | L";
+                return " | ±L";
             case "Label":
                 return "";
+            case "Unsigned Linear Gauge":
+                return " | L";
             default:
                 return null;
         }

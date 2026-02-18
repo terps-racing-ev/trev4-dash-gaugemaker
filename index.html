@@ -33,6 +33,7 @@
                         <select name="gauges" id="gauge_type">
                             <option value="label">Label</option>
                             <option value="simple">Simple</option>
+                            <option value="unsigned_linear">Unsigned Linear</option>
                             <option value="signed_linear">Signed Linear</option>
                         </select>
                         <br>
@@ -59,22 +60,29 @@
 
                         Box Color <input type="color" id="gauge_box_color" name="box_color" value="#000000"> <br>
 
-                        Border Color <input type="color" id="gauge_border_color" name="border_color" value="#ffffff"> <br>
+                        Border Color <input type="color" id="gauge_border_color" name="border_color" value="#ffffff">
+                        <br>
 
                         Text Color <input type="color" id="gauge_text_color" name="text_color" value="#ffffff"> <br><br>
 
+                        <span id="unsigned_linear_options">
+                            Fill Color <input type="color" id="gauge_fill_color" name="fill_color" value="#00ff00">
+                            <br>
+                        </span>
                         <span id="signed_linear_options">
                             Positive Color <input type="color" id="gauge_positive_color" name="positive_color"
                                 value="#00ff00"> <br>
                             Negative Color <input type="color" id="gauge_negative_color" name="negative_color"
                                 value="#ff0000"> <br>
+                        </span>
+                        <span id="linear_options">
                             Vertical <input type="checkbox" id="gauge_vertical">
                             Show Value<input type="checkbox" id="gauge_show_value">
-                        </span> <br>
+                         </span>   <br>
 
-                        <button id="add_gauge">Add Gauge</button>
+                            <button id="add_gauge">Add Gauge</button>
 
-                        <br><br>
+                            <br><br>
 
 
             </div>

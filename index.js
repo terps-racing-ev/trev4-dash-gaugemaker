@@ -13,7 +13,9 @@ var canvasWidth = document.getElementById("width");
 var canvas = document.getElementById("canvas");
 var createGaugeMenu = document.getElementById("define_gauge");
 
-var linearGaugeOptions = document.getElementById("signed_linear_options");
+var unsignedLinearOptions = document.getElementById("unsigned_linear_options");
+var signedLinearOptions = document.getElementById("signed_linear_options");
+var linearOptions = document.getElementById("linear_options");
 
 var nonLabelOptions = document.getElementById("non_label_options");
 
@@ -42,18 +44,30 @@ gaugeType.addEventListener("change", function () {
     if (gaugeType.value == "simple") {
         document.getElementById("gauge_decimals").style.display = "inline";
         document.getElementById("decimals").style.display = "inline";
-        linearGaugeOptions.style.display = "none";
+        signedLinearOptions.style.display = "none";
+        unsignedLinearOptions.style.display = "none";
         nonLabelOptions.style.display = "inline";
     } else if(gaugeType.value == "signed_linear") {
         document.getElementById("gauge_decimals").style.display = "none";
         document.getElementById("decimals").style.display = "none";
-        linearGaugeOptions.style.display = "inline";
+        unsignedLinearOptions.style.display = "none";
+        signedLinearOptions.style.display = "inline";
+        linearOptions.style.display = "inline";
         nonLabelOptions.style.display = "inline";
     } else if(gaugeType.value == "label") {
         document.getElementById("gauge_decimals").style.display = "none";
         document.getElementById("decimals").style.display = "none";
         nonLabelOptions.style.display = "none";
-        linearGaugeOptions.style.display = "none";
+        linearOptions.style.display = "none";
+        signedLinearOptions.style.display = "none";
+        unsignedLinearOptions.style.display = "none";
+    } else if(gaugeType.value == "unsigned_linear") {
+        document.getElementById("gauge_decimals").style.display = "none";
+        document.getElementById("decimals").style.display = "none";
+        unsignedLinearOptions.style.display = "inline";
+        signedLinearOptions.style.display = "none";
+        linearOptions.style.display = "none";
+        nonLabelOptions.style.display = "inline";
     }
 });
 
@@ -106,14 +120,14 @@ addGaugeBtn.addEventListener("click", function () {
     var type = idToGaugeType(gaugeType.value);
     var label = document.getElementById("gauge_label").value;
     var signal = document.getElementById("gauge_signal").value;
-    var decimals = document.getElementById("gauge_decimals").value;
-    var min = document.getElementById("gauge_min").value;
-    var max = document.getElementById("gauge_max").value;
+    var decimals = Number(document.getElementById("gauge_decimals").valueAsNumber);
+    var min = Number(document.getElementById("gauge_min").valueAsNumber);
+    var max = Number(document.getElementById("gauge_max").valueAsNumber);
 
-    var x = document.getElementById("gauge_x").value;
-    var y = document.getElementById("gauge_y").value;
-    var width = document.getElementById("gauge_width").value;
-    var height = document.getElementById("gauge_height").value;
+    var x = Number(document.getElementById("gauge_x").valueAsNumber);
+    var y = Number(document.getElementById("gauge_y").valueAsNumber);
+    var width = Number(document.getElementById("gauge_width").valueAsNumber);
+    var height = Number(document.getElementById("gauge_height").valueAsNumber);
     var transform = [x, y, width, height];
 
     function hexToRgb(hex) {
@@ -127,6 +141,8 @@ addGaugeBtn.addEventListener("click", function () {
     var boxColor = hexToRgb(document.getElementById("gauge_box_color").value);
     var borderColor = hexToRgb(document.getElementById("gauge_border_color").value);
     var textColor = hexToRgb(document.getElementById("gauge_text_color").value);
+    
+    var fillColor = hexToRgb(document.getElementById("gauge_fill_color").value)
     var positiveColor = hexToRgb(document.getElementById("gauge_positive_color").value);
     var negativeColor = hexToRgb(document.getElementById("gauge_negative_color").value);
 
@@ -149,10 +165,14 @@ addGaugeBtn.addEventListener("click", function () {
     }
 
     if (type === "Simple Gauge") {
-        toAdd.decimals = Number(decimals);
+        toAdd.decimals_places = Number(decimals);
     } else if (type === "Signed Linear Gauge") {
         toAdd.positive_color = positiveColor;
         toAdd.negative_color = negativeColor;
+        toAdd.vertical = vertical;
+        toAdd.show_value = showValue;
+    } else if (type === "Unsigned Linear Gauge") {
+        toAdd.fill_color = fillColor;
         toAdd.vertical = vertical;
         toAdd.show_value = showValue;
     }
