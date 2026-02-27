@@ -21,6 +21,12 @@ var nonLabelOptions = document.getElementById("non_label_options");
 
 var canvasSize = document.getElementById("canvas_size");
 
+var radiusOptions = document.getElementById("radius_options");
+var unitOptions = document.getElementById("unit_options");
+var numericThresholds = document.getElementById("numeric_thresholds");
+var tireTempOptions = document.getElementById("tire_temp_options");
+var warningLightOptions = document.getElementById("warning_light_options");
+
 var activeGauges = [];
 
 var ctx = canvas.getContext("2d");
@@ -41,33 +47,82 @@ var exportData = {
 
 
 gaugeType.addEventListener("change", function () {
-    if (gaugeType.value == "simple") {
-        document.getElementById("gauge_decimals").style.display = "inline";
-        document.getElementById("decimals").style.display = "inline";
-        signedLinearOptions.style.display = "none";
-        unsignedLinearOptions.style.display = "none";
-        nonLabelOptions.style.display = "inline";
-    } else if(gaugeType.value == "signed_linear") {
-        document.getElementById("gauge_decimals").style.display = "none";
-        document.getElementById("decimals").style.display = "none";
-        unsignedLinearOptions.style.display = "none";
-        signedLinearOptions.style.display = "inline";
-        linearOptions.style.display = "inline";
-        nonLabelOptions.style.display = "inline";
-    } else if(gaugeType.value == "label") {
-        document.getElementById("gauge_decimals").style.display = "none";
-        document.getElementById("decimals").style.display = "none";
-        nonLabelOptions.style.display = "none";
-        linearOptions.style.display = "none";
-        signedLinearOptions.style.display = "none";
-        unsignedLinearOptions.style.display = "none";
-    } else if(gaugeType.value == "unsigned_linear") {
-        document.getElementById("gauge_decimals").style.display = "none";
-        document.getElementById("decimals").style.display = "none";
-        unsignedLinearOptions.style.display = "inline";
-        signedLinearOptions.style.display = "none";
-        linearOptions.style.display = "none";
-        nonLabelOptions.style.display = "inline";
+
+    nonLabelOptions.style.display = "none";
+    unsignedLinearOptions.style.display = "none";
+    signedLinearOptions.style.display = "none";
+    linearOptions.style.display = "none";
+
+    radiusOptions.style.display = "none";
+    unitOptions.style.display = "none";
+    numericThresholds.style.display = "none";
+    tireTempOptions.style.display = "none";
+    warningLightOptions.style.display = "none";
+
+    document.getElementById("gauge_decimals").style.display = "none";
+    document.getElementById("decimals").style.display = "none";
+
+    switch (gaugeType.value) {
+
+        case "label":
+            break;
+
+        case "simple":
+            nonLabelOptions.style.display = "inline";
+            document.getElementById("gauge_decimals").style.display = "inline";
+            document.getElementById("decimals").style.display = "inline";
+            break;
+
+        case "unsigned_linear":
+            nonLabelOptions.style.display = "inline";
+            unsignedLinearOptions.style.display = "inline";
+            linearOptions.style.display = "inline";
+            break;
+
+        case "signed_linear":
+            nonLabelOptions.style.display = "inline";
+            signedLinearOptions.style.display = "inline";
+            linearOptions.style.display = "inline";
+            break;
+
+        case "status_bar":
+            break;
+
+        case "speed_arc":
+            nonLabelOptions.style.display = "inline";
+            radiusOptions.style.display = "inline";
+            unitOptions.style.display = "inline";
+            break;
+
+        case "rpm_bar":
+            nonLabelOptions.style.display = "inline";
+            unitOptions.style.display = "inline";
+            break;
+
+        case "soc_ring":
+            nonLabelOptions.style.display = "inline";
+            radiusOptions.style.display = "inline";
+            break;
+
+        case "vertical_bar":
+            nonLabelOptions.style.display = "inline";
+            unsignedLinearOptions.style.display = "inline";
+            linearOptions.style.display = "inline";
+            break;
+
+        case "numeric_card":
+            nonLabelOptions.style.display = "inline";
+            unitOptions.style.display = "inline";
+            numericThresholds.style.display = "inline";
+            break;
+
+        case "tire_temps":
+            tireTempOptions.style.display = "inline";
+            break;
+
+        case "warning_lights":
+            warningLightOptions.style.display = "inline";
+            break;
     }
 });
 
@@ -93,7 +148,7 @@ generateBtn.addEventListener("click", function () {
     canvasSize.style.display = "inline";
 
     gaugeType.dispatchEvent(new Event("change"));
-    
+
 });
 
 importInput.addEventListener("change", function (event) {
@@ -129,6 +184,22 @@ addGaugeBtn.addEventListener("click", function () {
     var width = Number(document.getElementById("gauge_width").valueAsNumber);
     var height = Number(document.getElementById("gauge_height").valueAsNumber);
     var transform = [x, y, width, height];
+    var radius = Number(document.getElementById("gauge_radius").valueAsNumber);
+    var unit = document.getElementById("gauge_unit").value;
+    var decimalPlaces = Number(document.getElementById("gauge_decimal_places").valueAsNumber);
+    var warnPct = Number(document.getElementById("gauge_warn_pct").valueAsNumber);
+    var critPct = Number(document.getElementById("gauge_crit_pct").valueAsNumber);
+
+    var fl = document.getElementById("gauge_fl").value;
+    var fr = document.getElementById("gauge_fr").value;
+    var rl = document.getElementById("gauge_rl").value;
+    var rr = document.getElementById("gauge_rr").value;
+
+    var imd = document.getElementById("gauge_imd").value;
+    var ams = document.getElementById("gauge_ams").value;
+    var bspd = document.getElementById("gauge_bspd").value;
+    var appsFault = document.getElementById("gauge_apps").value;
+    var brake = document.getElementById("gauge_brake").value;
 
     function hexToRgb(hex) {
         return [
@@ -141,7 +212,7 @@ addGaugeBtn.addEventListener("click", function () {
     var boxColor = hexToRgb(document.getElementById("gauge_box_color").value);
     var borderColor = hexToRgb(document.getElementById("gauge_border_color").value);
     var textColor = hexToRgb(document.getElementById("gauge_text_color").value);
-    
+
     var fillColor = hexToRgb(document.getElementById("gauge_fill_color").value)
     var positiveColor = hexToRgb(document.getElementById("gauge_positive_color").value);
     var negativeColor = hexToRgb(document.getElementById("gauge_negative_color").value);
@@ -158,7 +229,7 @@ addGaugeBtn.addEventListener("click", function () {
         border_color: borderColor,
         text_color: textColor
     };
-    if(type !== "Label") {
+    if (type !== "Label") {
         toAdd.signal = signal;
         toAdd.min_val = min;
         toAdd.max_val = max;
@@ -175,6 +246,26 @@ addGaugeBtn.addEventListener("click", function () {
         toAdd.fill_color = fillColor;
         toAdd.vertical = vertical;
         toAdd.show_value = showValue;
+    }
+    if (radius) toAdd.radius = radius;
+    if (unit) toAdd.unit = unit;
+    if (!isNaN(decimalPlaces)) toAdd.decimal_places = decimalPlaces;
+    if (!isNaN(warnPct)) toAdd.warn_pct = warnPct;
+    if (!isNaN(critPct)) toAdd.crit_pct = critPct;
+
+    if (type === "TireTempsWidget") {
+        toAdd.FL = fl;
+        toAdd.FR = fr;
+        toAdd.RL = rl;
+        toAdd.RR = rr;
+    }
+
+    if (type === "WarningLights") {
+        toAdd.IMD = imd;
+        toAdd.AMS = ams;
+        toAdd.BSPD = bspd;
+        toAdd.APPS = appsFault;
+        toAdd.BRAKE = brake;
     }
 
     activeGauges.push(new Gauge(toAdd));
@@ -221,7 +312,7 @@ function getMousePos(canvas, event) {
 
 
 function refreshGauges() {
-    
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = `rgb(${exportData.display.bg_color[0]}, ${exportData.display.bg_color[1]}, ${exportData.display.bg_color[2]})`;
@@ -236,14 +327,21 @@ function refreshGauges() {
 // Modify this as you add more gauge types
 function idToGaugeType(id) {
     switch (id) {
-        case "simple":
-            return "Simple Gauge";
-        case "signed_linear":
-            return "Signed Linear Gauge";
-        case "label":
-            return "Label";
-        default:
-            return null;
+        case "simple": return "Simple Gauge";
+        case "signed_linear": return "Signed Linear Gauge";
+        case "unsigned_linear": return "Unsigned Linear Gauge";
+        case "label": return "Label";
+
+        case "status_bar": return "StatusBar";
+        case "speed_arc": return "SpeedArcGauge";
+        case "rpm_bar": return "RPMBar";
+        case "soc_ring": return "SoCRingGauge";
+        case "vertical_bar": return "VerticalBarGauge";
+        case "numeric_card": return "NumericCard";
+        case "tire_temps": return "TireTempsWidget";
+        case "warning_lights": return "WarningLights";
+
+        default: return null;
     }
 }
 

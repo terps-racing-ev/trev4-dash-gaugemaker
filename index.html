@@ -35,6 +35,15 @@
                             <option value="simple">Simple</option>
                             <option value="unsigned_linear">Unsigned Linear</option>
                             <option value="signed_linear">Signed Linear</option>
+
+                            <option value="status_bar">StatusBar</option>
+                            <option value="speed_arc">SpeedArcGauge</option>
+                            <option value="rpm_bar">RPMBar</option>
+                            <option value="soc_ring">SoCRingGauge</option>
+                            <option value="vertical_bar">VerticalBarGauge</option>
+                            <option value="numeric_card">NumericCard</option>
+                            <option value="tire_temps">TireTempsWidget</option>
+                            <option value="warning_lights">WarningLights</option>
                         </select>
                         <br>
 
@@ -78,11 +87,39 @@
                         <span id="linear_options">
                             Vertical <input type="checkbox" id="gauge_vertical">
                             Show Value<input type="checkbox" id="gauge_show_value">
-                         </span>   <br>
+                        </span> <br>
+                        <span id="radius_options">
+                            Radius <input type="number" id="gauge_radius" style="width:5em;">
+                            <br>
+                        </span>
+                        <span id="unit_options">
+                            Unit <input type="text" id="gauge_unit" placeholder="Unit">
+                            <br>
+                            Decimal Places <input type="number" id="gauge_decimal_places" style="width:5em;">
+                            <br>
+                        </span>
+                        <span id="numeric_thresholds">
+                            Warn % <input type="number" step="0.01" id="gauge_warn_pct" style="width:5em;">
+                            Crit % <input type="number" step="0.01" id="gauge_crit_pct" style="width:5em;">
+                            <br>
+                        </span>
+                        <span id="tire_temp_options">
+                            FL Signal <input type="text" id="gauge_fl"><br>
+                            FR Signal <input type="text" id="gauge_fr"><br>
+                            RL Signal <input type="text" id="gauge_rl"><br>
+                            RR Signal <input type="text" id="gauge_rr"><br>
+                        </span>
+                        <span id="warning_light_options">
+                            IMD <input type="text" id="gauge_imd"><br>
+                            AMS <input type="text" id="gauge_ams"><br>
+                            BSPD <input type="text" id="gauge_bspd"><br>
+                            APPS <input type="text" id="gauge_apps"><br>
+                            BRAKE <input type="text" id="gauge_brake"><br>
+                        </span>
+                        <button id="add_gauge">Add Gauge</button>
 
-                            <button id="add_gauge">Add Gauge</button>
+                        <br><br>
 
-                            <br><br>
 
 
             </div>
