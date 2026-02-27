@@ -281,8 +281,12 @@ canvas.addEventListener("click", function (e) {
     for (let gauge of activeGauges) {
         if (gauge.contains(mousePos.x, mousePos.y)) {
 
-            var gaugeInfo = `Label: ${gauge.data.label}\nType: ${gauge.data.type}\nSignal: ${gauge.data.signal || "N/A"} \nPosition: (${gauge.x}, ${gauge.y})\nSize: ${gauge.width}x${gauge.height}`;
-
+            var gaugeInfo = `Label: ${gauge.data.label}\nType: ${gauge.data.type}\nSignal: ${gauge.data.signal || "N/A"} \nPosition: (${gauge.x}, ${gauge.y})\nSize: ${gauge.width}x${gauge.height}\n`;
+            if(gauge.data.radius) gaugeInfo += `Radius: ${gauge.data.radius}\n`;
+            if(gauge.data.unit) gaugeInfo += `Unit: ${gauge.data.unit}\n`;
+            if(gauge.data.decimal_places !== undefined) gaugeInfo += `Decimal Places: ${gauge.data.decimal_places}\n`;
+            if(gauge.data.warn_pct !== undefined) gaugeInfo += `Warn Pct: ${gauge.data.warn_pct}\n`;
+            if(gauge.data.crit_pct !== undefined) gaugeInfo += `Crit Pct: ${gauge.data.crit_pct}\n`;
             const result = confirm(`${gaugeInfo}\n\nDo you want to delete "${gauge.data.label}"?`);
 
             if (result) {

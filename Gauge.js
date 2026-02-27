@@ -64,6 +64,28 @@ export default class Gauge {
                 return "";
             case "Unsigned Linear Gauge":
                 return " | L";
+            case "Radial Gauge":
+                return " | R";
+            case "Bar Gauge":
+                return " | B";
+            case "Dot Gauge":
+                return " | D";
+            case "Icon Gauge":
+                return " | I";
+            case "Text Gauge":
+                return " | TXT";
+            case "Image Gauge":
+                return " | IMG";
+            case "Sparkline Gauge":
+                return " | SL";
+            case "LED Gauge":
+                return " | LED";
+            case "Progress Gauge":
+                return " | P";
+            case "Thermometer Gauge":
+                return " | T";
+            case "Clock Gauge":
+                return " | C";
             default:
                 return null;
         }
