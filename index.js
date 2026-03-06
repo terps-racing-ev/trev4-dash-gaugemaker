@@ -43,6 +43,8 @@ canvas.style.display = "none";
 createGaugeMenu.style.display = "none";
 canvasSize.style.display = "none";
 
+var mousePosition = { x: 0, y: 0 }; 
+
 var exportData = {
     display: {
         width: Number(canvasWidth.value),
@@ -179,7 +181,7 @@ generateBtn.addEventListener("click", function () {
     exportData.display.width = Number(canvasWidth.value);
     exportData.display.height = Number(canvasHeight.value);
 
-    canvasSize.textContent = canvasWidth.value + "x" + canvasHeight.value;
+    canvasSize.textContent = "Size: " + canvasWidth.value + "x" + canvasHeight.value + " Mouse: (" + mousePosition.x + ", " + mousePosition.y + ")";
     canvasSize.style.display = "inline";
 
     gaugeType.dispatchEvent(new Event("change"));
@@ -347,9 +349,14 @@ addGaugeBtn.addEventListener("click", function () {
         toAdd.RR = rrTire;
     }
 
-    refreshGauges();
+    console.log("adding gauge with data:", toAdd.label);
+    
+
+    activeGauges.push(new Gauge(toAdd));
 
     exportData.gauges.push(toAdd);
+
+    refreshGauges();
 });
 
 canvas.addEventListener("click", function (e) {
@@ -490,4 +497,15 @@ function loadFromJSON(data) {
 
 exportBtn.addEventListener("click", function () {
     downloadJSON(exportData, "gauge_config.json");
+});
+
+
+//random mouse hover bs
+canvas.addEventListener("mousemove", function(event) {
+    const rect = canvas.getBoundingClientRect();
+
+    mousePosition.x = event.clientX - rect.left;
+    mousePosition.y = event.clientY - rect.top;
+
+    canvasSize.textContent = "Size: " + canvasWidth.value + "x" + canvasHeight.value + " Mouse: (" + Math.round(mousePosition.x) + ", " + Math.round(mousePosition.y) + ")";
 });
