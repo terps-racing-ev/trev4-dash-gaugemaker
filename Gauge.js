@@ -56,7 +56,8 @@ export default class Gauge {
         const centerX = this.x + this.width / 2;
         const centerY = this.y + this.height / 2;
 
-        const text = this.data.label + this.type(this.data.type);
+        const label = this.data.label ? this.data.label : "NOLABEL";
+        const text = label + this.type(this.data.type);
 
 
         ctx.save();
@@ -94,6 +95,12 @@ export default class Gauge {
                 return " | DSA";
             case "darkcellvoltage":
                 return " | DCV";
+            case "darkstatusbar":
+                return " | SB";
+            case "shiftlightsgauge":
+                return " | SLG";
+            case "darkfaultrow":
+                return " | FR";
             default:
                 return " | UNDEF";
         }

@@ -31,6 +31,8 @@ var activeGauges = [];
 
 var cellVoltageOptions = document.getElementById("cell_voltage_options");
 var darkCellOptions = document.getElementById("dark_cell_options");
+var darkFaultRowOptions = document.getElementById("dark_fault_row_options");
+var darkTireQuadOptions = document.getElementById("dark_tire_quad_options");
 
 var gaugeDecimalPlaces = document.getElementById("gauge_decimal_places");
 
@@ -65,6 +67,8 @@ gaugeType.addEventListener("change", function () {
 
     cellVoltageOptions.style.display = "none";
     darkCellOptions.style.display = "none";
+    darkFaultRowOptions.style.display = "none";
+    darkTireQuadOptions.style.display = "none";
 
     gaugeDecimalPlaces.style.display = "none";
 
@@ -143,6 +147,16 @@ gaugeType.addEventListener("change", function () {
             unitOptions.style.display = "inline";
             cellVoltageOptions.style.display = "inline";
             decimalPlaces.style.display = "inline";
+            break;
+        case "dark_fault_row":
+            darkFaultRowOptions.style.display = "inline";
+            nonLabelOptions.style.display = "none";
+            break;
+        case "dark_tire_quad":
+            darkTireQuadOptions.style.display = "inline";
+            nonLabelOptions.style.display = "none";
+            break;
+        default:
             break;
     }
 });
@@ -226,6 +240,17 @@ addGaugeBtn.addEventListener("click", function () {
     var signalMin = document.getElementById("gauge_signal_min").value;
     var signalMax = document.getElementById("gauge_signal_max").value;
 
+    var imdFault = document.getElementById("gauge_imd_fault").value;
+    var amsFault = document.getElementById("gauge_ams_fault").value;
+    var bspdFault = document.getElementById("gauge_bspd_fault").value;
+    var appsFaultRow = document.getElementById("gauge_apps_fault").value;
+    var brakeFault = document.getElementById("gauge_brake_fault").value;
+
+    var flTire = document.getElementById("gauge_fl_tire").value;
+    var frTire = document.getElementById("gauge_fr_tire").value;
+    var rlTire = document.getElementById("gauge_rl_tire").value;
+    var rrTire = document.getElementById("gauge_rr_tire").value;
+
     function hexToRgb(hex) {
         return [
             parseInt(hex.substring(1, 3), 16),
@@ -307,6 +332,21 @@ addGaugeBtn.addEventListener("click", function () {
         toAdd.signal_max = signalMax;
     }
 
+    if (type === "DarkFaultRow") {
+        toAdd.IMD = imdFault;
+        toAdd.AMS = amsFault;
+        toAdd.BSPD = bspdFault;
+        toAdd.APPS = appsFaultRow;
+        toAdd.BRAKE = brakeFault;
+    }
+
+    if (type === "DarkTireQuad") {
+        toAdd.FL = flTire;
+        toAdd.FR = frTire;
+        toAdd.RL = rlTire;
+        toAdd.RR = rrTire;
+    }
+
     refreshGauges();
 
     exportData.gauges.push(toAdd);
@@ -318,13 +358,19 @@ canvas.addEventListener("click", function (e) {
     for (let gauge of activeGauges) {
         if (gauge.contains(mousePos.x, mousePos.y)) {
 
-            var gaugeInfo = `Label: ${gauge.data.label}\nType: ${gauge.data.type}\nSignal: ${gauge.data.signal || "N/A"} \nPosition: (${gauge.x}, ${gauge.y})\nSize: ${gauge.width}x${gauge.height}\n`;
-            if (gauge.data.radius) gaugeInfo += `Radius: ${gauge.data.radius}\n`;
-            if (gauge.data.unit) gaugeInfo += `Unit: ${gauge.data.unit}\n`;
-            if (gauge.data.decimal_places !== undefined) gaugeInfo += `Decimal Places: ${gauge.data.decimal_places}\n`;
-            if (gauge.data.warn_pct !== undefined) gaugeInfo += `Warn Pct: ${gauge.data.warn_pct}\n`;
-            if (gauge.data.crit_pct !== undefined) gaugeInfo += `Crit Pct: ${gauge.data.crit_pct}\n`;
-            const result = confirm(`${gaugeInfo}\n\nDo you want to delete "${gauge.data.label}"?`);
+            // var gaugeInfo = `Label: ${gauge.data.label}\nType: ${gauge.data.type}\nSignal: ${gauge.data.signal || "N/A"} \nPosition: (${gauge.x}, ${gauge.y})\nSize: ${gauge.width}x${gauge.height}\n`;
+            // if (gauge.data.radius) gaugeInfo += `Radius: ${gauge.data.radius}\n`;
+            // if (gauge.data.unit) gaugeInfo += `Unit: ${gauge.data.unit}\n`;
+            // if (gauge.data.decimal_places !== undefined) gaugeInfo += `Decimal Places: ${gauge.data.decimal_places}\n`;
+            // if (gauge.data.warn_pct !== undefined) gaugeInfo += `Warn Pct: ${gauge.data.warn_pct}\n`;
+            // if (gauge.data.crit_pct !== undefined) gaugeInfo += `Crit Pct: ${gauge.data.crit_pct}\n`;
+
+            var gaugeInfo = JSON.stringify(gauge.data, null, 2);
+            const result = confirm(`
+                ========================================\n
+                DON'T CLICK OK UNLESS YOU WANT TO DELETE\n
+                ========================================
+                \nGauge Details:\n${gaugeInfo}\n\nDo you want to delete ${gauge.data.type} "${gauge.data.label}"?`);
 
             if (result) {
                 console.log("deleting gauge");
@@ -337,7 +383,7 @@ canvas.addEventListener("click", function (e) {
             break;
         }
     }
-})
+});
 
 function getMousePos(canvas, event) {
     const rect = canvas.getBoundingClientRect();
@@ -383,7 +429,10 @@ function idToGaugeType(id) {
         case "warning_lights": return "WarningLights";
         case "cell_voltage": return "CellVoltageCard";
         case "dark_cell": return "DarkCell";
-
+        case "shift_lights": return "ShiftLightsGauge";
+        case "dark_speed_arc": return "DarkSpeedArc";
+        case "dark_fault_row": return "DarkFaultRow";
+        case "dark_tire_quad": return "DarkTireQuad";
         default: return null;
     }
 }
