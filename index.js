@@ -29,6 +29,11 @@ var warningLightOptions = document.getElementById("warning_light_options");
 
 var activeGauges = [];
 
+var cellVoltageOptions = document.getElementById("cell_voltage_options");
+var darkCellOptions = document.getElementById("dark_cell_options");
+
+var gaugeDecimalPlaces = document.getElementById("gauge_decimal_places");
+
 var ctx = canvas.getContext("2d");
 
 exportBtn.style.display = "none";
@@ -48,7 +53,6 @@ var exportData = {
 
 gaugeType.addEventListener("change", function () {
 
-    nonLabelOptions.style.display = "none";
     unsignedLinearOptions.style.display = "none";
     signedLinearOptions.style.display = "none";
     linearOptions.style.display = "none";
@@ -59,37 +63,37 @@ gaugeType.addEventListener("change", function () {
     tireTempOptions.style.display = "none";
     warningLightOptions.style.display = "none";
 
-    document.getElementById("gauge_decimals").style.display = "none";
-    document.getElementById("decimals").style.display = "none";
+    cellVoltageOptions.style.display = "none";
+    darkCellOptions.style.display = "none";
 
+    gaugeDecimalPlaces.style.display = "none";
+
+    nonLabelOptions.style.display = "inline";
     switch (gaugeType.value) {
 
         case "label":
+            nonLabelOptions.style.display = "none";
             break;
 
         case "simple":
-            nonLabelOptions.style.display = "inline";
-            document.getElementById("gauge_decimals").style.display = "inline";
-            document.getElementById("decimals").style.display = "inline";
+            gaugeDecimalPlaces.style.display = "inline";
             break;
 
         case "unsigned_linear":
-            nonLabelOptions.style.display = "inline";
             unsignedLinearOptions.style.display = "inline";
             linearOptions.style.display = "inline";
             break;
 
         case "signed_linear":
-            nonLabelOptions.style.display = "inline";
             signedLinearOptions.style.display = "inline";
             linearOptions.style.display = "inline";
             break;
 
         case "status_bar":
+            statusbarOptions.style.display = "inline";
             break;
 
         case "speed_arc":
-            nonLabelOptions.style.display = "inline";
             radiusOptions.style.display = "inline";
             unitOptions.style.display = "inline";
             break;
@@ -122,6 +126,23 @@ gaugeType.addEventListener("change", function () {
 
         case "warning_lights":
             warningLightOptions.style.display = "inline";
+            break;
+        case "cell_voltage":
+            cellVoltageOptions.style.display = "inline";
+            break;
+        case "dark_cell":
+            darkCellOptions.style.display = "inline";
+            unitOptions.style.display = "inline";
+            gaugeDecimalPlaces.style.display = "inline";
+            break;
+        case "shift_lights":
+            cellVoltageOptions.style.display = "inline";
+            break;
+        case "dark_speed_arc":
+            darkCellOptions.style.display = "inline";
+            unitOptions.style.display = "inline";
+            cellVoltageOptions.style.display = "inline";
+            decimalPlaces.style.display = "inline";
             break;
     }
 });
@@ -175,7 +196,6 @@ addGaugeBtn.addEventListener("click", function () {
     var type = idToGaugeType(gaugeType.value);
     var label = document.getElementById("gauge_label").value;
     var signal = document.getElementById("gauge_signal").value;
-    var decimals = Number(document.getElementById("gauge_decimals").valueAsNumber);
     var min = Number(document.getElementById("gauge_min").valueAsNumber);
     var max = Number(document.getElementById("gauge_max").valueAsNumber);
 
@@ -200,6 +220,11 @@ addGaugeBtn.addEventListener("click", function () {
     var bspd = document.getElementById("gauge_bspd").value;
     var appsFault = document.getElementById("gauge_apps").value;
     var brake = document.getElementById("gauge_brake").value;
+
+    var accentColor = hexToRgb(document.getElementById("gauge_accent_color").value);
+    var last = document.getElementById("gauge_last").checked;
+    var signalMin = document.getElementById("gauge_signal_min").value;
+    var signalMax = document.getElementById("gauge_signal_max").value;
 
     function hexToRgb(hex) {
         return [
@@ -236,7 +261,7 @@ addGaugeBtn.addEventListener("click", function () {
     }
 
     if (type === "Simple Gauge") {
-        toAdd.decimals_places = Number(decimals);
+        toAdd.decimals = decimalPlaces;
     } else if (type === "Signed Linear Gauge") {
         toAdd.positive_color = positiveColor;
         toAdd.negative_color = negativeColor;
@@ -249,7 +274,6 @@ addGaugeBtn.addEventListener("click", function () {
     }
     if (radius) toAdd.radius = radius;
     if (unit) toAdd.unit = unit;
-    if (!isNaN(decimalPlaces)) toAdd.decimal_places = decimalPlaces;
     if (!isNaN(warnPct)) toAdd.warn_pct = warnPct;
     if (!isNaN(critPct)) toAdd.crit_pct = critPct;
 
@@ -268,7 +292,20 @@ addGaugeBtn.addEventListener("click", function () {
         toAdd.BRAKE = brake;
     }
 
-    activeGauges.push(new Gauge(toAdd));
+    if (type === "DarkCell") {
+        toAdd.accent_color = accentColor;
+        if(last) toAdd.last = last;
+        if (!isNaN(decimalPlaces)) toAdd.decimal_places = decimalPlaces;
+    }
+
+    if (type === "DarkSpeedArc") {
+        if (!isNaN(decimalPlaces)) toAdd.decimal_places = decimalPlaces;
+    }
+
+    if (type === "CellVoltageCard") {
+        toAdd.signal_min = signalMin;
+        toAdd.signal_max = signalMax;
+    }
 
     refreshGauges();
 
@@ -282,11 +319,11 @@ canvas.addEventListener("click", function (e) {
         if (gauge.contains(mousePos.x, mousePos.y)) {
 
             var gaugeInfo = `Label: ${gauge.data.label}\nType: ${gauge.data.type}\nSignal: ${gauge.data.signal || "N/A"} \nPosition: (${gauge.x}, ${gauge.y})\nSize: ${gauge.width}x${gauge.height}\n`;
-            if(gauge.data.radius) gaugeInfo += `Radius: ${gauge.data.radius}\n`;
-            if(gauge.data.unit) gaugeInfo += `Unit: ${gauge.data.unit}\n`;
-            if(gauge.data.decimal_places !== undefined) gaugeInfo += `Decimal Places: ${gauge.data.decimal_places}\n`;
-            if(gauge.data.warn_pct !== undefined) gaugeInfo += `Warn Pct: ${gauge.data.warn_pct}\n`;
-            if(gauge.data.crit_pct !== undefined) gaugeInfo += `Crit Pct: ${gauge.data.crit_pct}\n`;
+            if (gauge.data.radius) gaugeInfo += `Radius: ${gauge.data.radius}\n`;
+            if (gauge.data.unit) gaugeInfo += `Unit: ${gauge.data.unit}\n`;
+            if (gauge.data.decimal_places !== undefined) gaugeInfo += `Decimal Places: ${gauge.data.decimal_places}\n`;
+            if (gauge.data.warn_pct !== undefined) gaugeInfo += `Warn Pct: ${gauge.data.warn_pct}\n`;
+            if (gauge.data.crit_pct !== undefined) gaugeInfo += `Crit Pct: ${gauge.data.crit_pct}\n`;
             const result = confirm(`${gaugeInfo}\n\nDo you want to delete "${gauge.data.label}"?`);
 
             if (result) {
@@ -344,6 +381,8 @@ function idToGaugeType(id) {
         case "numeric_card": return "NumericCard";
         case "tire_temps": return "TireTempsWidget";
         case "warning_lights": return "WarningLights";
+        case "cell_voltage": return "CellVoltageCard";
+        case "dark_cell": return "DarkCell";
 
         default: return null;
     }
@@ -384,6 +423,8 @@ function loadFromJSON(data) {
 
     canvasWidth.value = canvas.width;
     canvasHeight.value = canvas.height;
+
+    canvas.style.backgroundColor = "black";
 
     canvasSize.textContent = canvasWidth.value + "x" + canvasHeight.value;
     canvasSize.style.display = "inline";

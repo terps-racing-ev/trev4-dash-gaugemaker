@@ -26,68 +26,76 @@ export default class Gauge {
     }
 
     draw(ctx) {
-    ctx.fillStyle = `rgba(${this.data.box_color[0]}, ${this.data.box_color[1]}, ${this.data.box_color[2]}, 1)`;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+        try {
+            ctx.fillStyle = `rgba(${this.data.box_color[0]}, ${this.data.box_color[1]}, ${this.data.box_color[2]}, 1)`;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        } catch (e) {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
 
-    ctx.strokeStyle = `rgba(${this.data.border_color[0]}, ${this.data.border_color[1]}, ${this.data.border_color[2]}, 1)`;
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
-
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = "14px Arial";
-    ctx.fillStyle = `rgba(${this.data.text_color[0]}, ${this.data.text_color[1]}, ${this.data.text_color[2]}, 1)`;
-
-    const centerX = this.x + this.width / 2;
-    const centerY = this.y + this.height / 2;
-
-    const text = this.data.label + this.type(this.data.type);
+        try {
+            ctx.strokeStyle = `rgba(${this.data.border_color[0]}, ${this.data.border_color[1]}, ${this.data.border_color[2]}, 1)`;
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+        } catch (e) {
+            ctx.strokeStyle = 'white';
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
+        }
 
 
-    ctx.save();
-    ctx.translate(centerX, centerY);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "14px Arial";
 
-    if(this.height >= this.width* 2 && ctx.measureText(text).width > this.width)
-         ctx.rotate(-Math.PI / 2);
+        try {
+            ctx.fillStyle = `rgba(${this.data.text_color[0]}, ${this.data.text_color[1]}, ${this.data.text_color[2]}, 1)`;
+        } catch (e) {
+            ctx.fillStyle = 'white';
+        }
 
-    ctx.fillText(text, 0, 0);
-    ctx.restore();
-}
+        const centerX = this.x + this.width / 2;
+        const centerY = this.y + this.height / 2;
+
+        const text = this.data.label + this.type(this.data.type);
+
+
+        ctx.save();
+        ctx.translate(centerX, centerY);
+
+        if (this.height >= this.width * 2 && ctx.measureText(text).width > this.width)
+            ctx.rotate(-Math.PI / 2);
+
+        ctx.fillText(text, 0, 0);
+        ctx.restore();
+    }
 
 
     type(type) {
-        switch (type) {
-            case "Simple Gauge":
+        const normalizedType = type.trim().toLowerCase().replace(/\s+/g, '');
+        
+        switch (normalizedType) {
+            case "simplegauge":
                 return " | S";
-            case "Signed Linear Gauge":
+            case "signedlineargauge":
                 return " | ±L";
-            case "Label":
+            case "label":
                 return "";
-            case "Unsigned Linear Gauge":
+            case "unsignedlineargauge":
                 return " | L";
-            case "Radial Gauge":
+            case "radialgauge":
                 return " | R";
-            case "Bar Gauge":
+            case "bargauge":
                 return " | B";
-            case "Dot Gauge":
-                return " | D";
-            case "Icon Gauge":
-                return " | I";
-            case "Text Gauge":
-                return " | TXT";
-            case "Image Gauge":
-                return " | IMG";
-            case "Sparkline Gauge":
+            case "shiftlights":
                 return " | SL";
-            case "LED Gauge":
-                return " | LED";
-            case "Progress Gauge":
-                return " | P";
-            case "Thermometer Gauge":
-                return " | T";
-            case "Clock Gauge":
-                return " | C";
+            case "darkcell":
+                return " | DC";
+            case "darkspeedarc":
+                return " | DSA";
+            case "darkcellvoltage":
+                return " | DCV";
             default:
-                return null;
+                return " | UNDEF";
         }
     }
 }

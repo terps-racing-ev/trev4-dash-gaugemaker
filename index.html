@@ -31,19 +31,21 @@
                     <h4>Gauge Values</h6>
                         <label for="gauges">Gauge Type</label>
                         <select name="gauges" id="gauge_type">
-                            <option value="label">Label</option>
+                            <!-- <option value="label">Label</option> -->
+                            <!-- Legacy -->
                             <option value="simple">Simple</option>
                             <option value="unsigned_linear">Unsigned Linear</option>
                             <option value="signed_linear">Signed Linear</option>
+                            <!-- Dark Theme Gauges -->
+                            <option value="shift_lights">ShiftLightsGauge</option>
+                            <option value="dark_status_bar">DarkStatusBar</option>
+                            <option value="dark_cell">DarkCell</option>
+                            <option value="cell_voltage_card">CellVoltageCard</option>
+                            <option value="dark_speed_arc">DarkSpeedArc</option>
+                            <option value="dark_tire_quad">DarkTireQuad</option>
+                            <option value="dark_fault_row">DarkFaultRow</option>
 
-                            <option value="status_bar">StatusBar</option>
-                            <option value="speed_arc">SpeedArcGauge</option>
-                            <option value="rpm_bar">RPMBar</option>
-                            <option value="soc_ring">SoCRingGauge</option>
-                            <option value="vertical_bar">VerticalBarGauge</option>
-                            <option value="numeric_card">NumericCard</option>
-                            <option value="tire_temps">TireTempsWidget</option>
-                            <option value="warning_lights">WarningLights</option>
+                            
                         </select>
                         <br>
 
@@ -56,8 +58,8 @@
                                 min="0">
                             <input type="number" id="gauge_max" placeholder="Max" style="width: 5em;" min="1"> <br>
 
-                            <label id="decimals">Decimal Places</label>
-                            <input type="number" id="gauge_decimals" placeholder="Decimal Places" style="width: 5em;">
+                            <!-- <label id="decimals">Decimal Places</label>
+                            <input type="number" id="gauge_decimals" placeholder="Decimal Places" style="width: 5em;"> -->
                             <br>
                         </span>
                         <h4> Gauge Properties</h4>
@@ -115,6 +117,18 @@
                             BSPD <input type="text" id="gauge_bspd"><br>
                             APPS <input type="text" id="gauge_apps"><br>
                             BRAKE <input type="text" id="gauge_brake"><br>
+                        </span>
+                        <span id="cell_voltage_options">
+                            Min Signal <input type="text" id="gauge_signal_min"><br>
+                            Max Signal <input type="text" id="gauge_signal_max"><br>
+                        </span>
+
+                        <span id="dark_cell_options">
+                            Accent Color <input type="color" id="gauge_accent_color" value="#00d4e8"><br>
+                            Last Cell <input type="checkbox" id="gauge_last"><br>
+                        </span>
+                        <span id="shift_lights_options">
+                            <!-- use cell voltage options for now -->
                         </span>
                         <button id="add_gauge">Add Gauge</button>
 
